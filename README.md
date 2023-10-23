@@ -2,6 +2,7 @@
 Introduction to Robotics course, part of the 3rd-year curriculum at the Faculty of Computer Science, University of Bucharest, offers a comprehensive exploration of the field of robotics through hands-on projects and homework. Each homework includes requirements, implementation details, code and image/video files.
 ## Homework 2
 Task Requirements:
+
 Using 3 potentiometers and 1 RGB LED, we have to control each one of the RGB LED colors with a separate potentiometer. Each value that is read from the potentiometers must be mapped to values that will be used as input for the RGB LED.
 Materials used: 
 - 3 x potentiometer
