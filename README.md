@@ -15,7 +15,6 @@ Materials used:
 ![homework2_1](https://github.com/bogdan017/IntroductionToRobotics/assets/54263191/07342555-c3c9-4eac-a5a4-80e7b9e694e2)
 
 Video link: https://www.youtube.com/watch?v=00x7TlBC634
-
 ##Homework 3
 Task Requirements:
 
