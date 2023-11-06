@@ -32,3 +32,19 @@ Materials used:
 ![homework3_3](https://github.com/bogdan017/IntroductionToRobotics/assets/54263191/1daf9a84-5ed3-4b8d-ad2c-f414f47ef081)
 
 Video link: https://youtube.com/watch/-MYIDNVVdmU?feature=share
+
+## Homework 4
+Task Requirements:
+
+Using a joystick and a 7 segment display implement a mini game where you can move between the leds of the 7 segment display and when you short press the joystick's button you can toggle the state of the current led. A long press will reset the display.
+
+Materials used: 
+- 1 x joystick
+- 1 x 7 segment display
+- 8 x 220 ohm resistors
+- wires
+
+![homework4_1](https://github.com/bogdan017/IntroductionToRobotics/assets/54263191/5af9689a-07d2-49e7-97f0-4dec3cb21073)
+
+Video link: https://www.youtube.com/watch?v=NSoVmi8gc4w 
+
