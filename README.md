@@ -1,4 +1,4 @@
-# IntroductionToRobotics
+![homework5_2](https://github.com/bogdan017/IntroductionToRobotics/assets/54263191/1d222045-5a62-4e23-ac7e-ec318c249aa8)# IntroductionToRobotics
 Introduction to Robotics course, part of the 3rd-year curriculum at the Faculty of Computer Science, University of Bucharest, offers a comprehensive exploration of the field of robotics through hands-on projects and homework. Each homework includes requirements, implementation details, code and image/video files.
 ## Homework 2
 Task Requirements:
@@ -47,4 +47,19 @@ Materials used:
 ![homework4_1](https://github.com/bogdan017/IntroductionToRobotics/assets/54263191/5af9689a-07d2-49e7-97f0-4dec3cb21073)
 
 Video link: https://www.youtube.com/watch?v=NSoVmi8gc4w 
+
+## Homework 5
+Task Requirements: 
+Using a 4 digit 7 segment display and 3 buttons implement a stopwatch that can start/pause, reset and cycle through laps. Reset will only take effect when pause mode is active and a second press will delete the lap memory. Also the lap memory can cycle through the last 4 laps.
+
+Materials used: 
+- 1 x 4 digit 7 segment display
+- 3 x push buttons
+- 8 x 220 ohm resistors
+- 1 x shift register 74HC595N
+- wires
+
+![homework5_2](https://github.com/bogdan017/IntroductionToRobotics/assets/54263191/f9e6b8e4-f691-4d75-a3ae-e08da47f52a7)
+
+Video link: https://drive.google.com/file/d/1dyPIHJe5cQkZdgh5T5RWedqggQNTMzfl/view?usp=sharing
 
