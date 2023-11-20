@@ -34,7 +34,7 @@ bool timerPaused = false;
 unsigned long startTimer = 0;
 unsigned long pauseTimer = 0;
 
-int displayMode = 0;
+int displayMode = -1;
 
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay = 200;
@@ -47,9 +47,10 @@ int currentIndex = displayCount;
 int lapDisplayIndex = 0;
 int lapMemory[displayCount];
 
-const int lapMemorySize = 5;
+const int lapMemorySize = 4;
 
 void setup() {
+
     pinMode(resetPin, INPUT_PULLUP);
     pinMode(lapPin, INPUT_PULLUP);
     pinMode(startPausePin, INPUT_PULLUP);
@@ -71,7 +72,7 @@ void loop() {
     lastStartPauseState = digitalRead(startPausePin);
     lastLapModeState = digitalRead(lapPin);
 
-    checkResetButton();
+    handleReset();
 
     switch(displayMode) {
         case 0: // start mode
@@ -92,15 +93,16 @@ void loop() {
 void startPauseButtonPressInterrupt() {
     unsigned long currentMillis = millis();
     byte currentState = digitalRead(startPausePin);
-
+    
     if (currentMillis - lastDebounceTime > debounceDelay) {
         if (lastStartPauseState != currentState) {
             lastDebounceTime = currentMillis;
-            if (displayMode == 0) {
-                displayMode = 1;
-            } else if (displayMode != 2) {
-                displayMode = 0;
-            }
+            if (displayMode == 3 || displayMode == 1 || displayMode == -1) { // idle or pause
+                displayMode = 0; // check the display state and if it is idle, pause or the code has not been yet uploaded
+                                //make the current display state 0, that is start mode
+            } else if (displayMode == 0) { // start
+                displayMode = 1; // else if we are already on start mode, we can toggle to pause if the button is pressed again
+            } 
         }
     }
 }
@@ -113,8 +115,8 @@ void lapButtonPressInterrupt() {
         if (lastLapModeState != currentState) {
             lastDebounceTime = currentMillis;
             if (displayMode == 0 && !timerPaused) {
-                addLap((currentMillis - startTimer) / millisecondsPerSecond);
-            } else if (displayMode == 2) {
+                addLap((currentMillis - startTimer) / millisecondsPerSecond); // if we are on the start mode and couting we can save a lap
+            } else if (displayMode == 2) { //and if on lap mode we can cycle through them
                 currentIndex = (currentIndex + 1) % lapDisplayIndex;
             }
         }
@@ -123,39 +125,54 @@ void lapButtonPressInterrupt() {
 
 
 void addLap(int lapNum) {
-    if (lapDisplayIndex < lapMemorySize) {
-        lapMemory[lapDisplayIndex] = lapNum;
-        ++lapDisplayIndex;
+    if (lapDisplayIndex >= lapMemorySize) {
+        for (int i = 1; i < lapMemorySize; ++i) {
+            lapMemory[i - 1] = lapMemory[i];
+        }
+        --lapDisplayIndex; 
     }
 
-}
+    lapMemory[lapDisplayIndex] = lapNum;
+    ++lapDisplayIndex;
+}//adds a lap time to memory, managing lap history within a set memory size
+
 
 void startModeLoop() {
-    if (timerPaused) {
-        startTimer += millis() - pauseTimer;
-    }
-
     if (!timerRunning) {
+        timerRunning = true;
         startTimer = millis();
     }
 
+    if (timerPaused) {
+        startTimer += millis() - pauseTimer;
+        timerPaused = false;
+
+    }
+
     writeNumber((millis() - startTimer) / millisecondsPerSecond);
+}//controls the timer functionality, starts the timer if not running, resumes from pause, and updates display for a specific time
+
+
+void lapModeLoop() {
+    if (lapDisplayIndex == 0) {
+        writeNumber(0); 
+    } else {
+        if (currentIndex == displayCount) {
+            writeNumber(0);
+        } else {
+            writeNumber(lapMemory[currentIndex]);
+        }
+    }
 }
+
 
 void pauseModeLoop() {
     if (!timerPaused) {
         pauseTimer = millis();
+        timerPaused = true;
     }
 
     writeNumber((pauseTimer - startTimer) / millisecondsPerSecond);
-}
-
-void lapModeLoop() {
-    if (currentIndex == displayCount) {
-        writeNumber(0);
-    } else {
-        writeNumber(lapMemory[currentIndex]);
-    }
 }
 
 void idleModeLoop() {
@@ -181,14 +198,14 @@ void activateDisplay(int displayNumber) {
 }
 
 void writeReg(int digit, bool hasDecimal) {
-    const byte decimalPoint = B00000001; 
+    byte decimalPoint = B00000001; 
 
     if (hasDecimal) {
         // Add decimal point
-        digit = digit + decimalPoint; // Set the LSB to 1
+        digit |= decimalPoint; 
     } else {
-        // Ensure no decimal point
-        digit = digit - (digit % 2); // Set the LSB to 0
+        // make sure there is no decimal point on the current display
+        digit &= ~decimalPoint; 
     }
 
     digitalWrite(latchPin, LOW);
@@ -203,41 +220,44 @@ void writeNumber(int number) {
     bool decimalAdded = false;
 
     while (displayDigit >= 0) {
-        if (currentNumber != 0 || displayDigit == 1) {
+        if (currentNumber != 0) {
             lastDigit = currentNumber % 10;
             currentNumber /= 10;
         } else {
             lastDigit = 0;
         }
 
-        if (displayDigit == 1 && !decimalAdded) {
+        if (displayDigit == 2 && !decimalAdded) {
             activateDisplay(displayDigit);
             writeReg(byteEncodings[lastDigit], true);
-            writeReg(B00000000, true);
+            writeReg(B00000000, false);
             decimalAdded = true;
-        } else if (displayDigit != 1) {
+        } else if (displayDigit != 2) {
             activateDisplay(displayDigit);
             writeReg(byteEncodings[lastDigit], false);
             writeReg(B00000000, false);
         }
         --displayDigit;
     }
-}
+}//displays a numerical value on a 4 digit 7 segment display, supporting decimal points if applicable (in this case just for display number 2)
+//else just ignores the decimal points
 
-void checkResetButton() {
-    static bool resetButtonPressed = false;
-    if(!resetButtonPressed && millis() - lastDebounceTime > debounceDelay && digitalRead(resetPin) == LOW) {
-        if(displayMode == 2) {
+
+void handleReset() {
+    bool isResetPressed = false;
+
+    if (digitalRead(resetPin) == HIGH) {
+        isResetPressed = false;
+    }
+
+    if(millis() - lastDebounceTime > debounceDelay && digitalRead(resetPin) == LOW && !isResetPressed) {
+        if(displayMode == 1){
+            displayMode = 2;
+        } else if(displayMode == 2) {
             displayMode = 3;
         }
-        else if(displayMode == 1){
-            displayMode = 2;
-        }
-        
         lastDebounceTime = millis();
-        resetButtonPressed = true;
-    }
-    else if (digitalRead(resetPin) == HIGH) {
-        resetButtonPressed = false;
-    }
+        isResetPressed = true;
+    } 
 }
+//added minor changes and comments
