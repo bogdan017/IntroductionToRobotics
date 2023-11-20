@@ -61,5 +61,5 @@ Materials used:
 
 ![homework5_3](https://github.com/bogdan017/IntroductionToRobotics/assets/54263191/4d3ed662-c2ec-4e6b-b0eb-7891cbeacec9)
 
-Video link: [https://drive.google.com/file/d/1dyPIHJe5cQkZdgh5T5RWedqggQNTMzfl/view?usp=sharing](https://youtu.be/CygMYvGqgGo)https://youtu.be/CygMYvGqgGo
+Video link: https://youtu.be/CygMYvGqgGo)https://youtu.be/CygMYvGqgGo
 
