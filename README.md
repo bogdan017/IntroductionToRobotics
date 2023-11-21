@@ -63,3 +63,21 @@ Materials used:
 
 Video link: https://youtu.be/CygMYvGqgGo)https://youtu.be/CygMYvGqgGo
 
+## Homework 6
+Task Requirements:
+Using an ultrasonic sensor, one LDR and one RGB LED, make a complete menu from where a user can choose an option between these 4: input sensor settings, reset logged data, system status and RGB LED control. Each of these has a submenu with other options that the user can access by introducing a number.
+
+Materials used:
+- 1 x ultrasonic sensor
+- 1 x LDR
+- 1 x RGB LED
+- 1 x 10k ohm resistor
+- 3 x 220 ohm resistors
+- wires
+
+![homework6_2](https://github.com/bogdan017/IntroductionToRobotics/assets/54263191/bde9c784-049e-42c5-a8e7-fd3dae1d46cf)
+
+Video link: to be uploaded...
+
+
+
