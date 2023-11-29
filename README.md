@@ -77,7 +77,8 @@ Materials used:
 
 ![homework6_2](https://github.com/bogdan017/IntroductionToRobotics/assets/54263191/bde9c784-049e-42c5-a8e7-fd3dae1d46cf)
 
-Video link: to be uploaded...
+Video link: https://youtu.be/IWUbKP2t8Ok
+Video link 2 (tinkercad) : https://youtu.be/kCMIdLdgbe8
 
 
 
